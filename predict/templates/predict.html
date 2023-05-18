@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Tic Tac Toe</title>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        font-family: "Montserrat", sans-serif;
+      }
+      body {
+        text-align: center;
+      }
+
+      #board {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-gap: 5px;
+        margin: 50px auto;
+        width: 300px;
+      }
+
+      .container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100px;
+        height: 100px;
+        border: 2px solid rgb(247, 214, 255);
+        font-size: 72px;
+        cursor: pointer;
+        background-color: #e3f2fd00;
+        border-radius: 4px;
+      }
+
+      .container:hover {
+        background-color: #18161b;
+      }
+
+      .container[data-mark="X"] {
+        color: red;
+      }
+
+      .container[data-mark="0"] {
+        color: blue;
+      }
+
+      .modal {
+        max-width: 400px;
+        display: block;
+        margin: auto;
+      }
+    </style>
+  </head>
+  <body style="background-color: #23063b">
+    <br /><br />
+    <h1 style="color: white; font-weight: bolder; font-size: 4.4rem">
+      Tic Tac Toe
+    </h1>
+    <div id="board">
+      <div class="container"></div>
+      <div class="container"></div>
+      <div class="container"></div>
+      <div class="container"></div>
+      <div class="container"></div>
+      <div class="container"></div>
+      <div class="container"></div>
+      <div class="container"></div>
+      <div class="container"></div>
+    </div>
+
+    <button class="btn btn-success" style="background-color:rgb(255, 81, 0);border-color: white;padding:8px 25px;" onclick="window.location.reload()">Reset</button>
+
+    <!-- Modal -->
+    <div
+      class="modal fade"
+      id="myModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="myModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div
+          class="modal-content"
+          style="width: 500px; background-color: #ffffff00; border: none"
+        >
+          <div class="modal-body">
+            <img
+              id="result_img"
+              src=""
+              alt=""
+              style="
+                width: 300px;
+                height: auto;
+                display: block;
+                margin: auto;
+                border-radius: 5px;
+                border: none;
+              "
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script>
+      var board = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+
+      function predictWinner(grid) {
+        // Define the winning combinations
+        const winningCombinations = [
+          [0, 1, 2],
+          [3, 4, 5],
+          [6, 7, 8], // Rows
+          [0, 3, 6],
+          [1, 4, 7],
+          [2, 5, 8], // Columns
+          [0, 4, 8],
+          [2, 4, 6], // Diagonals
+        ];
+
+        // Check if any winning combination is fulfilled
+        for (const combination of winningCombinations) {
+          const [a, b, c] = combination;
+          if (grid[a] === grid[b] && grid[b] === grid[c]) {
+            if (grid[a] === 1) {
+                document.getElementById("result_img").src =
+                "https://cdn.dribbble.com/users/309370/screenshots/11352811/media/f2fd547760af814bcf10db04a90c6f59.gif";
+
+              setTimeout(() => {
+                $("#myModal").modal("show");
+              }, 500);
+              setTimeout(() => {
+                $("#myModal").modal("hide");
+              }, 2000);
+            } else if (grid[a] === -1) {
+                document.getElementById("result_img").src =
+                "https://png.pngtree.com/png-clipart/20220529/original/pngtree-you-lose-comic-speech-bubble-cartoon-game-assets-png-image_7733836.png";
+              setTimeout(() => {
+                $("#myModal").modal("show");
+              }, 1000);
+              setTimeout(() => {
+                $("#myModal").modal("hide");
+              }, 2500);
+            }
+          }
+        }
+
+        // No winning combination found
+        console.log("No decision can be made");
+      }
+
+      var modal = document.getElementById("myModal");
+      modal.style.display = "none";
+
+      function handleClick(index) {
+        return function () {
+          var container = containers[index];
+          if (container.textContent === "") {
+            container.textContent = "X"; // or any other icon you want
+            container.style.color = "white";
+            container.style.fontWeight = "bolder";
+            board[index] = 1;
+            predictWinner(board)
+            fetch(`/predict/?input_array=${JSON.stringify(board)}`)
+              .then((response) => response.json())
+              .then((data) => {
+                console.log(data.prediction);
+                if (containers[data.prediction].textContent===""){
+                containers[data.prediction].textContent = "O";
+                containers[data.prediction].style.color = "white";
+                containers[data.prediction].style.fontWeight = "bolder";
+                board[data.prediction] = -1;
+                }
+                predictWinner(board)
+
+              })
+              .catch((error) => {
+                console.error("Error:", error);
+              });
+          }
+        };
+      }
+
+      // Add event listeners to the containers
+      var containers = document.getElementsByClassName("container");
+      for (var i = 0; i < containers.length; i++) {
+        containers[i].addEventListener("click", handleClick(i));
+      }
+
+      // Example usage
+    </script>
+    <script></script>
+  </body>
+</html>
