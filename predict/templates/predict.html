@@ -143,16 +143,18 @@
               }, 500);
               setTimeout(() => {
                 $("#myModal").modal("hide");
-              }, 2000);
+                window.location.reload()
+              }, 3500);
             } else if (grid[a] === -1) {
                 document.getElementById("result_img").src =
-                "https://png.pngtree.com/png-clipart/20220529/original/pngtree-you-lose-comic-speech-bubble-cartoon-game-assets-png-image_7733836.png";
+                "https://i.pinimg.com/originals/c5/a9/4a/c5a94a1ee0316b5eb573f35b1b4f00bc.gif";
               setTimeout(() => {
                 $("#myModal").modal("show");
-              }, 1000);
+              }, 500);
               setTimeout(() => {
                 $("#myModal").modal("hide");
-              }, 2500);
+                window.location.reload()
+              }, 3500);
             }
           }
         }
@@ -168,7 +170,7 @@
         return function () {
           var container = containers[index];
           if (container.textContent === "") {
-            container.textContent = "X"; // or any other icon you want
+            container.innerHTML = "&#x1F60A;"; // or any other icon you want
             container.style.color = "white";
             container.style.fontWeight = "bolder";
             board[index] = 1;
@@ -178,7 +180,7 @@
               .then((data) => {
                 console.log(data.prediction);
                 if (containers[data.prediction].textContent===""){
-                containers[data.prediction].textContent = "O";
+                containers[data.prediction].innerHTML = "&#x1F916;";
                 containers[data.prediction].style.color = "white";
                 containers[data.prediction].style.fontWeight = "bolder";
                 board[data.prediction] = -1;
