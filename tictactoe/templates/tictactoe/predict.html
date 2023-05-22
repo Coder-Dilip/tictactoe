@@ -94,7 +94,7 @@
           <div class="modal-body">
             <img
               id="result_img"
-              src=""
+              src="https://i.pinimg.com/originals/c5/a9/4a/c5a94a1ee0316b5eb573f35b1b4f00bc.gif"
               alt=""
               style="
                 width: 300px;
@@ -158,9 +158,10 @@
 
             const result = predictWinner(board);
             if (result === "O marking player wins") {
+              console.log("you lose")
               // document.getElementById("modal_content").textContent="Computer Wins"
               document.getElementById("result_img").src =
-                "https://png.pngtree.com/png-clipart/20220529/original/pngtree-you-lose-comic-speech-bubble-cartoon-game-assets-png-image_7733836.png";
+                "https://i.pinimg.com/originals/c5/a9/4a/c5a94a1ee0316b5eb573f35b1b4f00bc.gif";
               setTimeout(() => {
                 $("#myModal").modal("show");
               }, 1000);
